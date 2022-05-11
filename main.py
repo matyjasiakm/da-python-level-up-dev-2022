@@ -8,10 +8,29 @@ from pydantic import BaseModel
 app = FastAPI()
 
 
-@app.get("/")
+@app.get("/method")
 def root():
-    return {"start": "1970-01-01"}
+    return {"method": "GET"}
 
+@app.post("/method")
+def m_get():
+    return {"method": "GET"}
+
+@app.get("/method")
+def m_post():
+    return {"method": "POST"}
+
+@app.delete("/method")
+def m_del():
+    return {"method": "Delete"}
+
+@app.put("/method")
+def m_put():
+    return {"method": "PUT"}
+
+@app.options("/method")
+def m_option():
+    return {"method": "OPTIONS"}
 
 class HelloResp(BaseModel):
     msg: str
