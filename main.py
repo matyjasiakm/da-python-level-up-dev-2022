@@ -8,17 +8,17 @@ from pydantic import BaseModel
 app = FastAPI()
 
 
-@app.get("/method")
+@app.get("/")
 def root():
-    return {"method": "GET"}
+    return {"start": "1970-01-01"}
 
-@app.post("/method")
-def m_get():
-    return {"method": "GET"}
-
-@app.get("/method")
+@app.post("/method",status_code=201)
 def m_post():
     return {"method": "POST"}
+
+@app.get("/method")
+def m_get():
+    return {"method": "GET"}
 
 @app.delete("/method")
 def m_del():
