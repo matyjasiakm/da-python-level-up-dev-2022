@@ -56,15 +56,15 @@ def read_item(name: str, number: int, response: Response):
 
 
 class Event(BaseModel):
-    date: datetime.date
+    date: datetime
     event: str
 
 
 class EventInDb(BaseModel):
     id: int
-    date: datetime.date
+    date: datetime
     event: str
-    date_added: datetime.date
+    date_added: datetime
 
 
 id_counter = 0
@@ -72,14 +72,15 @@ calendar = []
 
 
 @app.put("/events")
-def put_event(event: Event):
+def put_event(event: Event, response: Response):
     global id_counter
     e = EventInDb()
-    e.date = event.date
+    e.date = event.date.date
     e.event = event.event
     e.id = id_counter
     id_counter += 1
-    e.date_added = datetime.now()
+    e.date_added = datetime.now().date()
+    response.status_code = status.HTTP_201_CREATED
     return e
 
 
