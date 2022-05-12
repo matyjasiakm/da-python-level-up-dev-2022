@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Dict
 
+import uvicorn
 from fastapi import FastAPI, Response, status
-
+import requests
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -71,8 +72,8 @@ id_counter = 0
 calendar = []
 
 
-@app.put("/events")
-def put_event(event: Event, response: Response):
+@app.put("/events", status_code=201)
+def put_event(event: Event):
     global id_counter
     e = EventInDb()
     e.date = event.date
@@ -80,7 +81,6 @@ def put_event(event: Event, response: Response):
     e.id = id_counter
     id_counter += 1
     e.date_added = str(datetime.now().date())
-    response.status_code = status.HTTP_201_CREATED
     return e
 
 
@@ -96,3 +96,4 @@ class GiveMeSomethingResp(BaseModel):
 @app.post("/dej/mi/coś", response_model=GiveMeSomethingResp)
 def receive_something(rq: GiveMeSomethingRq):
     return GiveMeSomethingResp(received=rq.dict())
+
