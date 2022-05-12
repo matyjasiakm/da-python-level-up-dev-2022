@@ -81,7 +81,7 @@ def put_event(event: Event):
     return e
 
 
-@app.get("/event/{date}")
+@app.get("/events/{date}")
 def receive_event(date: str, response: Response):
     format = "%Y-%m-%d"
     try:
@@ -93,7 +93,7 @@ def receive_event(date: str, response: Response):
     for i in calendar:
         if i.date == date:
             event_list.append(i)
-    if event_list.count() == 0:
+    if event_list.count == 0:
         response.status_code = status.HTTP_404_NOT_FOUND
         return
     response.status_code = status.HTTP_200_OK
