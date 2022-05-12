@@ -93,8 +93,9 @@ def receive_event(date: str, response: Response):
     for i in calendar:
         if i.date == date:
             event_list.append(i)
-    if event_list.count == 0:
+    if not event_list:
         response.status_code = status.HTTP_404_NOT_FOUND
         return
     response.status_code = status.HTTP_200_OK
     return event_list
+
