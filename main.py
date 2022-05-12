@@ -64,7 +64,7 @@ class Event(BaseModel):
 class EventInDb(BaseModel):
     id: int
     date: str
-    event: str
+    name: str
     date_added: str
 
 
@@ -72,28 +72,29 @@ id_counter = 0
 calendar = []
 
 
-@app.put("/events", status_code=201)
+@app.put("/events", status_code=200)
 def put_event(event: Event):
     global id_counter
-    e = EventInDb()
-    e.date = event.date
-    e.event = event.event
-    e.id = id_counter
+    e = EventInDb(id=id_counter, date=event.date, name=event.event, date_added=str(datetime.now().date()))
+    calendar.append(e)
     id_counter += 1
-    e.date_added = str(datetime.now().date())
     return e
 
 
-class GiveMeSomethingRq(BaseModel):
-    first_key: str
-
-
-class GiveMeSomethingResp(BaseModel):
-    received: Dict
-    constant_data: str = "python jest super"
-
-
-@app.post("/dej/mi/coś", response_model=GiveMeSomethingResp)
-def receive_something(rq: GiveMeSomethingRq):
-    return GiveMeSomethingResp(received=rq.dict())
-
+@app.get("/event/{date}")
+def receive_event(date: str, response: Response):
+    format = "%Y-%m-d"
+    try:
+        datetime.datetime.strptime(date, format)
+    except ValueError:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return
+    event_list = []
+    for i in calendar:
+        if i.date == date:
+            event_list.append(i)
+    if event_list.count() == 0:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return
+    response.status_code = status.HTTP_200_OK
+    return event_list
