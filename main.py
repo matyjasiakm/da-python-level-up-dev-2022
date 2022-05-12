@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict
 
 from fastapi import FastAPI, Response, status
@@ -52,6 +53,34 @@ def read_item(name: str, number: int, response: Response):
             return
     response.status_code = status.HTTP_400_BAD_REQUEST
     return
+
+
+class Event(BaseModel):
+    date: datetime.date
+    event: str
+
+
+class EventInDb(BaseModel):
+    id: int
+    date: datetime.date
+    event: str
+    date_added: datetime.date
+
+
+id_counter = 0
+calendar = []
+
+
+@app.put("/events")
+def put_event(event: Event):
+    global id_counter
+    e = EventInDb()
+    e.date = event.date
+    e.event = event.event
+    e.id = id_counter
+    id_counter += 1
+    e.date_added = datetime.now()
+    return e
 
 
 class GiveMeSomethingRq(BaseModel):
