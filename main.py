@@ -56,15 +56,15 @@ def read_item(name: str, number: int, response: Response):
 
 
 class Event(BaseModel):
-    date: datetime
+    date: str
     event: str
 
 
 class EventInDb(BaseModel):
     id: int
-    date: datetime
+    date: str
     event: str
-    date_added: datetime
+    date_added: str
 
 
 id_counter = 0
@@ -75,11 +75,11 @@ calendar = []
 def put_event(event: Event, response: Response):
     global id_counter
     e = EventInDb()
-    e.date = event.date.date
+    e.date = event.date
     e.event = event.event
     e.id = id_counter
     id_counter += 1
-    e.date_added = datetime.now().date()
+    e.date_added = str(datetime.now().date())
     response.status_code = status.HTTP_201_CREATED
     return e
 
