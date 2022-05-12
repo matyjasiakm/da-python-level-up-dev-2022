@@ -83,10 +83,10 @@ def put_event(event: Event):
 
 @app.get("/event/{date}")
 def receive_event(date: str, response: Response):
-    format = "%Y-%m-d"
+    format = "%Y-%m-%d"
     try:
-        datetime.datetime.strptime(date, format)
-    except ValueError:
+        datetime.strptime(date, format)
+    except ValueError :
         response.status_code = status.HTTP_400_BAD_REQUEST
         return
     event_list = []
