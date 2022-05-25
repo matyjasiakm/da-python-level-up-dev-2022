@@ -2,12 +2,14 @@ from datetime import datetime
 from typing import Dict
 
 import uvicorn
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, Response, status, Request, Depends
 import requests
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
 from starlette.responses import HTMLResponse
 
 app = FastAPI()
+security = HTTPBasic()
 
 
 @app.get("/")
@@ -106,3 +108,25 @@ def get_html():
     return """
     <h1>The unix epoch started at 1970-01-01</h1>
     """
+
+
+@app.post("/check", response_class=HTMLResponse)
+def zad_3_2(response: Response, credentials: HTTPBasicCredentials = Depends(security)):
+    format = "%Y-%m-%d"
+    try:
+        datetime.strptime(credentials.password, format)
+    except ValueError:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return
+    age = datetime.today().year - datetime.strptime(credentials.password, format).year - (
+            (datetime.today().month, datetime.today().day) < (
+        datetime.strptime(credentials.password, format).month, datetime.strptime(credentials.password, format).day))
+    if age < 16:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return
+
+    response.status_code= status.HTTP_200_OK
+    return f"<h1>Welcome ${credentials.username}! You are ${age}</h1>"
+
+
+uvicorn.run(app, host="127.0.0.1", port=5000, log_level="info")
