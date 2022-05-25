@@ -133,7 +133,7 @@ def zad_3_2(response: Response, credentials: HTTPBasicCredentials = Depends(secu
 def zad_33(response: Response, request: Request, format: str = Query("")):
     if format == "html":
         c = "<input type=\"text\" id=user-agent name=agent value=\"" + request.headers.get("User-Agent") + ">"
-        HTMLResponse(content=c, status_code=200)
+        return HTMLResponse(content=c, status_code=200)
     elif format == "json":
         return {"user_agent": request.headers.get("User-Agent")}
     else:
