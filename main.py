@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict
 
 import uvicorn
-from fastapi import FastAPI, Response, status, Request, Depends
+from fastapi import FastAPI, Response, status, Request, Depends, Query
 import requests
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
@@ -125,8 +125,19 @@ def zad_3_2(response: Response, credentials: HTTPBasicCredentials = Depends(secu
         response.status_code = status.HTTP_401_UNAUTHORIZED
         return
 
-    response.status_code= status.HTTP_200_OK
-    return f"<h1>Welcome ${credentials.username}! You are ${age}</h1>"
+    response.status_code = status.HTTP_200_OK
+    return f"<h1>Welcome {credentials.username}! You are {age}</h1>"
+
+
+@app.get("/info")
+def zad_33(response: Response, request: Request, format: str = Query("")):
+    if format == "html":
+        c = "<input type=\"text\" id=user-agent name=agent value=\"" + request.headers.get("User-Agent") + ">"
+        HTMLResponse(content=c, status_code=200)
+    elif format == "json":
+        return {"user_agent": request.headers.get("User-Agent")}
+    else:
+        response.status_code = status.HTTP_400_BAD_REQUEST
 
 
 
