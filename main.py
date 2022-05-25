@@ -5,6 +5,7 @@ import uvicorn
 from fastapi import FastAPI, Response, status
 import requests
 from pydantic import BaseModel
+from starlette.responses import HTMLResponse
 
 app = FastAPI()
 
@@ -86,7 +87,7 @@ def receive_event(date: str, response: Response):
     format = "%Y-%m-%d"
     try:
         datetime.strptime(date, format)
-    except ValueError :
+    except ValueError:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return
     event_list = []
@@ -99,3 +100,9 @@ def receive_event(date: str, response: Response):
     response.status_code = status.HTTP_200_OK
     return event_list
 
+
+@app.get("/start", response_class=HTMLResponse)
+def get_html():
+    return """
+    <h1>The unix epoch started at 1970-01-01</h1>
+    """
