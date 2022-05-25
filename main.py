@@ -129,4 +129,4 @@ def zad_3_2(response: Response, credentials: HTTPBasicCredentials = Depends(secu
     return f"<h1>Welcome ${credentials.username}! You are ${age}</h1>"
 
 
-uvicorn.run(app, host="127.0.0.1", port=5000, log_level="info")
+
