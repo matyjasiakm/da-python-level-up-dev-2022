@@ -132,12 +132,37 @@ def zad_3_2(response: Response, credentials: HTTPBasicCredentials = Depends(secu
 @app.get("/info")
 def zad_33(response: Response, request: Request, format: str = Query("")):
     if format == "html":
-        c = "<input type=\"text\" id=user-agent name=agent value=\"" + request.headers.get("User-Agent") + ">"
+        c = "<input type=\"text\" id=user-agent name=agent value=\"" + request.headers.get("User-Agent") + "\">"
         return HTMLResponse(content=c, status_code=200)
     elif format == "json":
         return {"user_agent": request.headers.get("User-Agent")}
     else:
         response.status_code = status.HTTP_400_BAD_REQUEST
+
+
+simple_db = []
+
+
+@app.get("/save/{s}")
+def zad_34(s: str, response: Response):
+    if s not in simple_db:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return
+    response.status_code = status.HTTP_301_MOVED_PERMANENTLY
+    response.headers.append("Location", "/info")
+
+
+@app.put("/save/{s}", status_code=200)
+def zad_34_put(s: str):
+    if s not in simple_db:
+        simple_db.append(s)
+    return
+
+
+@app.delete("/save/{s}", status_code=200)
+def zad_34_del(s: str):
+    simple_db.remove(s)
+    return
 
 
 
